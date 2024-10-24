@@ -1,6 +1,7 @@
 # %%
 import pandas as pd
 import matplotlib.pyplot as plt
+import polars as pl
 
 # Make the graphs a bit prettier, and bigger
 plt.style.use("ggplot")
@@ -25,7 +26,23 @@ bikes["Berri 1"].plot()
 plt.show()
 
 # TODO: Load the data using Polars
+# %% Load the data using Polars
+bikes = pl.read_csv(
+    "../data/bikes.csv",
+    separator=";",
+    encoding="latin1",
+    parse_dates=True,
+    try_parse_dates=True,
+    dtypes={"Date": pl.Date}
+)
 
+# Convert to Pandas DataFrame for plotting
+bikes_pd = bikes.to_pandas()
+bikes_pd.set_index("Date", inplace=True)
+
+# Plotting the data
+bikes_pd["Berri 1"].plot()
+plt.show()
 # %% Plot Berri 1 data
 # Next up, we're just going to look at the Berri bike path. Berri is a street in Montreal, with a pretty important bike path. I use it mostly on my way to the library now, but I used to take it to work sometimes when I worked in Old Montreal.
 
@@ -35,6 +52,10 @@ berri_bikes[:5]
 
 # TODO: Create a dataframe with just the Berri bikepath using Polars
 # Hint: Use pl.DataFrame.select() and call the data frame pl_berri_bikes
+# Create a DataFrame with just the Berri bike path data using Polars
+pl_berri_bikes = bikes.select(["Date", "Berri 1"])
+# Display the first 5 rows using Polars
+print(pl_berri_bikes.head(5))
 
 
 # %% Add weekday column
@@ -58,7 +79,12 @@ berri_bikes[:5]
 
 # TODO: Add a weekday column using Polars.
 # Hint: Polars does not use an index.
-
+# Extract 'Date' column and add a new 'weekday' column
+pl_berri_bikes = pl_berri_bikes.with_columns(
+    pl_berri_bikes["Date"].dt.weekday().alias("weekday")
+)
+# Display the first 5 rows
+print(pl_berri_bikes.head(5))
 
 # %%
 # Let's add up the cyclists by weekday
@@ -71,6 +97,13 @@ weekday_counts = berri_bikes.groupby("weekday").aggregate(sum)
 weekday_counts
 
 # TODO: Group by weekday and sum using Polars
+# Group the data by 'weekday' and sum the cyclist counts
+weekday_counts = pl_berri_bikes.groupby("weekday").agg(
+    pl.col("Berri 1").sum()
+)
+
+# Display the results
+print(weekday_counts)
 
 
 # %% Rename index

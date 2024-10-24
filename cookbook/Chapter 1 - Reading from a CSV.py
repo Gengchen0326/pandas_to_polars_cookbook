@@ -9,7 +9,8 @@ import seaborn as sns
 # We're going to be looking at some cyclist data from Montréal. Here's the [original page](http://donnees.ville.montreal.qc.ca/dataset/velos-comptage) (in French), but it's already included in this repository. We're using the data from 2012.
 
 # This dataset is a list of how many people were on 7 different bike paths in Montreal, each day.
-pl_broken_df = pl.read_csv("C:/Users/73631/OneDrive/桌面/pandas_to_polars_cookbook/data/bikes.csv", encoding="ISO-8859-1")
+
+pl_broken_df = pl.read_csv('/Users/shiyi/Desktop/Term 1/D100 Fundamentals of Data Science/pandas to polar notebook/pandas_to_polars_cookbook/data/bikes.csv', encoding="ISO-8859-1")
 
 # %%
 # Look at the first 3 rows
@@ -25,7 +26,7 @@ pl_broken_df.head(3)
 # * Set the index to be the 'Date' column
 
 pl_fixed_df = pl.read_csv(
-    "C:/Users/73631/OneDrive/桌面/pandas_to_polars_cookbook/data/bikes.csv",
+    '/Users/shiyi/Desktop/Term 1/D100 Fundamentals of Data Science/pandas to polar notebook/pandas_to_polars_cookbook/data/bikes.csv',
     separator=";",
     encoding="latin1",
         infer_schema_length=10000,
